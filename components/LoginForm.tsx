@@ -25,7 +25,7 @@ const LoginForm = () => {
                 return;
             }
 
-            router.replace('/dashboard'); // Replace with your actual dashboard route
+            router.replace('/dashboard');
         } catch (error) {
             setError('Failed to sign in');
             console.error('Error during sign in:', error);
