@@ -25,7 +25,7 @@ const LoginForm = () => {
                 return;
             }
 
-            router.replace('/dashboard');
+            router.replace('/home');
         } catch (error) {
             setError('Failed to sign in');
             console.error('Error during sign in:', error);
