@@ -6,3 +6,32 @@
 input {
     @apply w-[400px] border border-gray-200 py-2 px-6 bg-zinc-100/40
 }
+
+
+@layer prodComponents {
+    .header_top__icon_wrapper {
+        @apply bg-gray-200 rounded-md p-[6px] text-[14px] cursor-pointer hover:bg-blue-700 hover:text-white
+    }
+}
+
+.navbar__link:hover{
+    color: #078a1f;
+    transition: all 0.4s;
+}
+
+.navbar__link::after{
+    position: absolute;
+    content: '';
+    background-color: blue;
+    height: 3px;
+    width: 100%;
+    bottom: -5px;
+    left: 0;
+    scale: 0;
+    transform-origin: left;
+    transition: all 0.4s;
+}
+
+.navbar__link:hover::after{
+    scale: 1;
+}
