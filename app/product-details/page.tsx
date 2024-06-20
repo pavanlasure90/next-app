@@ -1,7 +1,9 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import productsData from "../../data.json";
 import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
+import Link from "next/link";
+import productsData from "../../data.json";
+import { useParams } from "next/navigation";
 
 interface Rating {
   rate: number;
@@ -18,10 +20,13 @@ interface Product {
   rating: Rating;
 }
 
-const NewProducts: React.FC = () => {
+const ProductsPage: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
+  const { id } = useParams();
+  console.log(id)
 
   useEffect(() => {
+    // Simulate fetching products from an API or data source
     setProducts(productsData);
   }, []);
 
@@ -52,20 +57,24 @@ const NewProducts: React.FC = () => {
             <div key={product.id} className="border rounded-lg p-4 shadow-lg">
               <img
                 style={{ height: "200px", width: "200px" }}
-                src={product.image}
-                alt={product.title}
+                src={product?.image}
+                alt={product?.title}
                 className="w-full h-auto mb-4 rounded-t-lg"
               />
-              <h2 className="text-lg font-medium mb-2">{product.title}</h2>
-              <div className="mb-4">{renderStars(product.rating.rate)}</div>
-              {/* <p className="text-gray-600 mb-2 font-bold">${product.price}</p> */}
-              <div className='font-bold flex gap-4 pb-2'>
+              <h2 className="text-lg font-medium mb-2">{product?.title}</h2>
+              <div className="mb-4">{renderStars(product?.rating?.rate)}</div>
+              <div className="font-bold flex gap-4 pb-2">
                 ${product.price}
-                <del className="text-gray-500 font-normal">${parseInt(product.price) +50}.00</del>
-            </div>
-              <button className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
-                View Product
-              </button>
+                <del className="text-gray-500 font-normal">
+                  ${parseInt(product?.price) + 50}.00
+                </del>
+              </div>
+              {/* Navigate to product details page on button click */}
+              <Link href={`/product-details/${product.id}`}>
+                <button className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
+                  View Product
+                </button>
+              </Link>
             </div>
           ))}
         </div>
@@ -74,4 +83,4 @@ const NewProducts: React.FC = () => {
   );
 };
 
-export default NewProducts;
+export default ProductsPage;

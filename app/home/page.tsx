@@ -1,15 +1,15 @@
 "use client"
 import React from 'react'
-import NewProducts from '../prodComponents/NewProducts'
 import Hero from '../prodComponents/Hero'
 import Testimonial from '../prodComponents/Testimonial'
+import ProductsPage from '../product-details/page'
 
 const page = () => {
 
   return (
     <div>
       <Hero />
-      <NewProducts />
+      <ProductsPage />
       <Testimonial />
     </div>
   )
