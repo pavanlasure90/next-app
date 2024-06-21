@@ -57,16 +57,16 @@ const ProductsPage: React.FC = () => {
             <div key={product.id} className="border rounded-lg p-4 shadow-lg">
               <img
                 style={{ height: "200px", width: "200px" }}
-                src={product?.image}
-                alt={product?.title}
+                src={product.image}
+                alt={product.title}
                 className="w-full h-auto mb-4 rounded-t-lg"
               />
-              <h2 className="text-lg font-medium mb-2">{product?.title}</h2>
-              <div className="mb-4">{renderStars(product?.rating?.rate)}</div>
+              <h2 className="text-lg font-medium mb-2">{product.title}</h2>
+              <div className="mb-4">{renderStars(product.rating.rate)}</div>
               <div className="font-bold flex gap-4 pb-2">
                 ${product.price}
                 <del className="text-gray-500 font-normal">
-                  ${parseInt(product?.price) + 50}.00
+                  ${parseInt(product.price) + 50}.00
                 </del>
               </div>
               {/* Navigate to product details page on button click */}
