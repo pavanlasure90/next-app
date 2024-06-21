@@ -70,11 +70,11 @@
 
 
 
-// /pages/api/add-to-cart.ts
 
 import { getSession } from 'next-auth/react';
 import User from '@/models/users';
 import { connectMongoDB } from '@/lib/mongodb';
+
 
 export default async function handler(req: any, res: any) {
   if (req.method !== 'POST') {
@@ -89,6 +89,7 @@ export default async function handler(req: any, res: any) {
 
   const { productId, title, price, description, category, image } = req.body;
   const userId = session.user.id;
+  console.log(userId)
 
   try {
     await connectMongoDB();

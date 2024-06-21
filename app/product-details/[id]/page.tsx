@@ -85,7 +85,7 @@ const Page = () => {
 
   const addToCart = async () => {
     try {
-      const response = await fetch('/api/cart', {
+      const response = await fetch('/api/add-to-cart', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
