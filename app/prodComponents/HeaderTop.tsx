@@ -34,10 +34,10 @@ const Navbar = () => {
                     </select>
                 </div>
             <div className='flex gap-10'>
-                <Link href='/userspage'>
+                <Link href='/home'>
                 <li>Home</li>
                 </Link>
-                <Link href='/userspage/user-details/cart'>
+                <Link href='/cart'>
                 <li>Cart</li>
                 </Link>
                 <Link href='/'>

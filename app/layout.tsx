@@ -2,10 +2,6 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "./Providers";
-import HeaderTop from "./prodComponents/HeaderTop";
-import HeaderMain from "./prodComponents/HeaderMain";
-import Navbar from "./prodComponents/Navbar";
-import Footer from "./prodComponents/Footer";
 
 import "slick-carousel/slick/slick.css"
 import "slick-carousel/slick/slick-theme.css"
@@ -26,11 +22,8 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <AuthProvider>
-          <HeaderTop />
-          <HeaderMain />
-          <Navbar />
+          
           {children}
-          <Footer/>
         </AuthProvider>
       </body>
     </html>
