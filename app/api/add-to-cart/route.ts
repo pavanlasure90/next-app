@@ -1,41 +1,34 @@
-// post and get calls
+import { authOptions } from "@/lib/Authoptions";
+import { connectMongoDB } from "@/lib/mongodb";
+import User from "@/models/users";
+import { getServerSession } from "next-auth";
+import { NextResponse } from "next/server";
 
 
-import { getSession } from 'next-auth/react';
-import User from '@/models/users';
-import { connectMongoDB } from '@/lib/mongodb';
-
-
-export default async function handler(req: any, res: any) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method Not Allowed' });
-  }
-
-  const session = await getSession({ req });
+export async function POST(request: Request) {
+  const session = await getServerSession(authOptions);
 
   if (!session) {
-    return res.status(401).json({ error: 'Unauthorized' });
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const { productId, title, price, description, category, image } = req.body;
-  const userId = session.user.id;
-  console.log(userId)
+  const body = await request.json();
+  const { userId, productId, title, price, description, category, image } = body;
+  // const userId = session?.user.id
+  console.log(userId, "user")
 
   try {
     await connectMongoDB();
 
-    const user = await User.findById(userId);
+    const user = await User.find({ email: userId });
+    console.log(user)
 
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-
-    const existingProductIndex = user.cart.findIndex(item => item.productId === productId);
+    const existingProductIndex = user[0].cart.findIndex(item => item.productId === productId);
 
     if (existingProductIndex !== -1) {
-      user.cart[existingProductIndex].quantity++;
+      user[0].cart[existingProductIndex].quantity++;
     } else {
-      user.cart.push({
+      user[0].cart.push({
         productId,
         title,
         price,
@@ -46,10 +39,11 @@ export default async function handler(req: any, res: any) {
       });
     }
 
-    await user.save();
-    res.status(201).json({ message: 'Product added to cart', user });
+    await user[0].save();
+    
+    return NextResponse.json({ message: 'Product added to cart', user }, { status: 201 });
   } catch (error) {
     console.error('Error adding product to cart:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

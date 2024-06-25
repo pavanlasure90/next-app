@@ -3,9 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { FaStar, FaStarHalfAlt, FaRegStar } from 'react-icons/fa';
 import Link from 'next/link';
 import productsData from '../../data.json';
-import { useRouter } from 'next/navigation'; // Import useRouter from next/router
+import { useRouter } from 'next/navigation'; 
 
-// Define interfaces for rating and product
 interface Rating {
   rate: number;
   count: number;

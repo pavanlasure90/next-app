@@ -1,36 +1,3 @@
-// import { NextResponse } from 'next/server';
-// import mongoose from 'mongoose';
-// import CartModel from '@/models/Cart';
-// import { connectMongoDB } from '@/lib/mongodb';
-
-// export async function POST(req: Request) {
-//   try {
-//     const { productId, title, price, description, category, image } = await req.json();
-
-//     await connectMongoDB();
-
-//     const cartItem = new CartModel({
-//       productId,
-//       title,
-//       price,
-//       description,
-//       category,
-//       image,
-//     });
-
-//     const savedCartItem = await cartItem.save();
-
-//     return NextResponse.json(savedCartItem, { status: 201 });
-//   } catch (error) {
-//     console.error('Error adding to cart:', error);
-//     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
-//   }
-// }
-
-
-
-
-
 import { getSession } from 'next-auth/react';
 import User from '@/models/users';
 import { connectMongoDB } from '@/lib/mongodb';
@@ -47,7 +14,7 @@ export default async function handler(req: any, res: any) {
   }
 
   const { productId, title, price, description, category, image } = req.body;
-  const userId = session.user.id;
+  const userId = session?.user?.id;
 
   try {
     await connectMongoDB();
