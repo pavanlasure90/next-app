@@ -12,8 +12,8 @@ export async function POST(request: Request) {
   }
 
   const body = await request.json();
-  const { userId, productId, title, price, description, category, image } = body;
-
+  const { userId, productId, title, price, description, category, image, quantity } = body;
+  
   try {
     await connectMongoDB();
 
@@ -26,16 +26,17 @@ export async function POST(request: Request) {
     const existingProductIndex = user.cart.findIndex(item => item.productId === productId);
 
     if (existingProductIndex !== -1) {
-      user.cart[existingProductIndex].quantity++;
+      user.cart[existingProductIndex].quantity += quantity;
+      user.cart[existingProductIndex].price += price * quantity; // Update total price for the added quantity
     } else {
       user.cart.push({
         productId,
         title,
-        price,
+        price: price * quantity, // Initial price calculation based on quantity
         description,
         category,
         image,
-        quantity: 1,
+        quantity,
       });
     }
 

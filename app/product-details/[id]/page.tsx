@@ -1,11 +1,12 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import productsData from "../../../data.json";
 import { useParams, useRouter } from "next/navigation";
 import Navbar from "@/app/prodComponents/HeaderTop";
 import HeaderMain from "@/app/prodComponents/HeaderMain";
 import Footer from "@/app/prodComponents/Footer";
 import { useSession } from "next-auth/react";
+
 interface Rating {
   rate: number;
   count: number;
@@ -27,9 +28,10 @@ const Page = () => {
   const product = productsData.find(
     (each: Product) => each.id.toString() === id
   );
-
+  const [quantity, setQuantity] = useState(1); // Initialize quantity state
   const { data: session } = useSession<any>();
   console.log(session, "session");
+
   const addToCart = async () => {
     if (!product) return;
 
@@ -48,6 +50,7 @@ const Page = () => {
           description: product.description,
           category: product.category,
           image: product.image,
+          quantity: quantity, // Pass quantity to the backend
         }),
       });
 
@@ -60,6 +63,16 @@ const Page = () => {
       }
     } catch (error) {
       console.error("Error adding product to cart:", error);
+    }
+  };
+
+  const incrementQuantity = () => {
+    setQuantity((prevQuantity) => prevQuantity + 1);
+  };
+
+  const decrementQuantity = () => {
+    if (quantity > 1) {
+      setQuantity((prevQuantity) => prevQuantity - 1);
     }
   };
 
@@ -85,7 +98,7 @@ const Page = () => {
               {product.description}
             </p>
             <p className="text-gray-800 font-bold mb-2 text-center">
-              ${product.price}
+              ${product.price * quantity} {/* Display updated price */}
             </p>
             <p className="text-gray-500 mb-4 text-center">
               Category: {product.category}
@@ -95,6 +108,21 @@ const Page = () => {
             <p className="text-gray-500">
               Rating: {product.rating.rate} ({product.rating.count} reviews)
             </p>
+            <div className="flex items-center">
+              <button
+                className="p-2 bg-blue-600 text-white border-gray-500 rounded"
+                onClick={decrementQuantity}
+              >
+                -
+              </button>
+              <span className="px-4">{quantity}</span>
+              <button
+                className="p-2 bg-blue-600 text-white border-gray-500 rounded"
+                onClick={incrementQuantity}
+              >
+                +
+              </button>
+            </div>
             <button
               className="p-2 bg-blue-600 text-white border-gray-500 rounded"
               onClick={addToCart}

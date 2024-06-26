@@ -10,6 +10,7 @@ interface CartItem {
   description: string;
   category: string;
   image: string;
+  quantity: number; // Add quantity property to CartItem interface
 }
 
 const Cart: React.FC = () => {
@@ -44,18 +45,23 @@ const Cart: React.FC = () => {
     }
   };
 
+  // Calculate total quantity and total price based on individual item quantities and prices
+  const totalQuantity = cartItems.reduce((total, item) => total + item.quantity, 0);
+  const totalPrice = cartItems.reduce((total, item) => total + (item.price), 0);
+
   return (
     <div>
       <Navbar />
       <div className="container pt-16">
         <h1 className="font-medium text-2xl mb-4">Your Cart</h1>
+       
         {cartItems.length === 0 ? (
           <p>Your cart is empty</p>
         ) : (
           <div className="grid grid-cols-1 gap-4">
             {cartItems.map((item) => (
               <div key={item.productId} className="flex flex-col md:flex-row items-center p-4 border rounded-lg shadow-md">
-                <img style={{width:"200px", height:"250px"}}
+                <img
                   src={item.image}
                   alt={item.title}
                   className="w-24 h-24 object-cover rounded-lg mb-4 md:mb-0"
@@ -63,7 +69,8 @@ const Cart: React.FC = () => {
                 <div className="flex-1 px-4">
                   <h3 className="text-gray-800 font-bold">{item.title}</h3>
                   <p className="text-gray-600">{item.description}</p>
-                  <p className="text-gray-800 font-bold">${item.price}</p>
+                  <p className="text-gray-800 font-bold">Price: ${item.price}</p>
+                  <p className="text-gray-800">Quantity: {item.quantity}</p>
                 </div>
                 <div className="flex flex-col md:flex-row md:items-center">
                   <button
@@ -82,6 +89,10 @@ const Cart: React.FC = () => {
             ))}
           </div>
         )}
+         <div className="cart-summary mb-4 font-bold" style={{ textAlign: 'right' }}>
+          <p>Total Quantity:  {totalQuantity}</p>
+          <p>Total Price: ${totalPrice.toFixed(2)}</p>
+        </div>
       </div>
     </div>
   );
