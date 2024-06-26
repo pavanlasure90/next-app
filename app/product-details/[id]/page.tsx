@@ -29,7 +29,7 @@ const Page = () => {
   );
 
   const { data: session } = useSession<any>();
-  console.log(session, "sessionn");
+  console.log(session, "session");
   const addToCart = async () => {
     if (!product) return;
 
@@ -70,7 +70,6 @@ const Page = () => {
   return (
     <>
       <Navbar />
-      <HeaderMain />
       <div className="container pt-16">
         <div className="border rounded-lg p-4 shadow-lg">
           <div className="flex flex-col items-center">

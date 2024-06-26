@@ -1,31 +1,29 @@
-import { getSession } from 'next-auth/react';
-import User from '@/models/users';
-import { connectMongoDB } from '@/lib/mongodb';
+import { authOptions } from "@/lib/Authoptions";
+import { connectMongoDB } from "@/lib/mongodb";
+import User from "@/models/users";
+import { getServerSession } from "next-auth";
+import { NextResponse } from "next/server";
 
-export default async function handler(req: any, res: any) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method Not Allowed' });
-  }
-
-  const session = await getSession({ req });
+export async function POST(request: Request) {
+  const session = await getServerSession(authOptions);
 
   if (!session) {
-    return res.status(401).json({ error: 'Unauthorized' });
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const { productId, title, price, description, category, image } = req.body;
-  const userId = session?.user?.id;
-
+  const body = await request.json();
+  const { userId, productId, title, price, description, category, image } = body;
+  
   try {
     await connectMongoDB();
 
-    const user = await User.findById(userId);
+    const user = await User.findOne({ email: userId });
 
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    const existingProductIndex = user.cart.findIndex(item => item.productId.toString() === productId);
+    const existingProductIndex = user.cart.findIndex(item => item.productId === productId);
 
     if (existingProductIndex !== -1) {
       user.cart[existingProductIndex].quantity++;
@@ -37,14 +35,41 @@ export default async function handler(req: any, res: any) {
         description,
         category,
         image,
-        quantity: 1 
+        quantity: 1,
       });
     }
 
+    user.markModified('cart');
     await user.save();
-    res.status(201).json({ message: 'Product added to cart', user });
+
+    return NextResponse.json({ message: 'Product added to cart', user }, { status: 201 });
   } catch (error) {
     console.error('Error adding product to cart:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+  }
+}
+
+export async function GET(request: Request) {
+  const session = await getServerSession(authOptions);
+
+  if (!session) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  const userId = session?.user?.email;
+  
+  try {
+    await connectMongoDB();
+
+    const user = await User.findOne({ email: userId });
+
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
+
+    return NextResponse.json({ cartItems: user.cart }, { status: 200 });
+  } catch (error) {
+    console.error('Error fetching cart items:', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

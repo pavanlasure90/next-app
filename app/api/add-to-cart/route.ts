@@ -4,7 +4,6 @@ import User from "@/models/users";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 
-
 export async function POST(request: Request) {
   const session = await getServerSession(authOptions);
 
@@ -14,21 +13,22 @@ export async function POST(request: Request) {
 
   const body = await request.json();
   const { userId, productId, title, price, description, category, image } = body;
-  // const userId = session?.user.id
-  console.log(userId, "user")
 
   try {
     await connectMongoDB();
 
-    const user = await User.find({ email: userId });
-    console.log(user)
+    const user = await User.findOne({ email: userId });
 
-    const existingProductIndex = user[0].cart.findIndex(item => item.productId === productId);
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
+
+    const existingProductIndex = user.cart.findIndex(item => item.productId === productId);
 
     if (existingProductIndex !== -1) {
-      user[0].cart[existingProductIndex].quantity++;
+      user.cart[existingProductIndex].quantity++;
     } else {
-      user[0].cart.push({
+      user.cart.push({
         productId,
         title,
         price,
@@ -39,8 +39,9 @@ export async function POST(request: Request) {
       });
     }
 
-    await user[0].save();
-    
+    user.markModified('cart');
+    await user.save();
+
     return NextResponse.json({ message: 'Product added to cart', user }, { status: 201 });
   } catch (error) {
     console.error('Error adding product to cart:', error);
