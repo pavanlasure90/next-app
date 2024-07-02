@@ -27,12 +27,12 @@ export async function POST(request: Request) {
 
     if (existingProductIndex !== -1) {
       user.cart[existingProductIndex].quantity += quantity;
-      user.cart[existingProductIndex].price += price * quantity; // Update total price for the added quantity
+      user.cart[existingProductIndex].price += price * quantity; 
     } else {
       user.cart.push({
         productId,
         title,
-        price: price * quantity, // Initial price calculation based on quantity
+        price: price * quantity, 
         description,
         category,
         image,
